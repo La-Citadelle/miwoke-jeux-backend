@@ -17,15 +17,16 @@ router.post('/login', (req, res) => {
         res.status(404).send({
           error: 'User not found.',
         });
+      } else {
+        req.login(user, { session: false }, (error) => {
+          if (error) {
+            res.send(error);
+          }
+    
+          const response = { token: cipher.generateResponseTokens(user) };
+          res.send(response);
+        });
       }
-      req.login(user, { session: false }, (error) => {
-        if (error) {
-          res.send(error);
-        }
-  
-        const response = { token: cipher.generateResponseTokens(user) };
-        res.send(response);
-      });
     });
 });
 
@@ -53,9 +54,9 @@ router.post('/reset-pass', auth, (req, res) => {
 });
 
 router.post('/request-pass', (req, res) => {
-  const { email } = req.body;
+  const { fullName } = req.body;
   authService
-    .requestPassword(email)
+    .requestPassword(fullName)
     .then(() => res.send({ message: `Email with reset password instructions was sent to email ${email}.` }))
     .catch((error) => {
       res.status(400).send({ data: { errors: error.message } });

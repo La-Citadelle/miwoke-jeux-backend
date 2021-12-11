@@ -34,6 +34,13 @@ class UserRepository extends BaseRepository {
         .findOne({ email }));
   }
 
+  findByDiscord(id_discord) {
+    return this.dbClient
+      .then(db => db
+        .collection(this.collection)
+        .findOne({ id_discord }));
+  }
+
   findUserForAuth(options) {
     return this.dbClient
       .then(db => db

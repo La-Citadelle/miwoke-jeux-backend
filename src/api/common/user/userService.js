@@ -22,6 +22,10 @@ class UserService {
     return this.repository.findByEmail(email);
   }
 
+  findByDiscord(id_discord) {
+    return this.repository.findByDiscord(id_discord);
+  }
+
   findUserForAuth(options) {
     return this.repository.findUserForAuth(options);
   }
@@ -32,12 +36,13 @@ class UserService {
   }
 
   addUser(user) {
-    return this.repository.findByEmail(user.email).then((existingUser) => {
-      if (existingUser) {
-        throw new Error('User already exists');
-      }
-      return this.repository.add(user);
-    })
+    return this.repository.findByDiscord(user.id_discord)
+      .then((existingUser) => {
+        if (existingUser) {
+          throw new Error('User already exists');
+        }
+        return this.repository.add(user);
+      })
   }
 
   addMany(users) {

@@ -16,12 +16,12 @@ const UserService = require('./api/common/user/userService');
 const userService = new UserService();
 
 passport.use(new LocalStrategy({
-  usernameField: 'email',
+  usernameField: 'fullName',
   passwordField: 'password',
 },
-(email, password, cb) => {
+(fullName, password, cb) => {
   userService
-    .findByEmail(email)
+    .findByFullName(fullName)
     .then(user => {
       const { passwordHash } = cipher.sha512(password, user.salt);
 

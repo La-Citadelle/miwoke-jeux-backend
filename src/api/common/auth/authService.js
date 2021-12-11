@@ -15,9 +15,9 @@ class AuthService {
   }
 
   register(user) {
-    const { email } = user;
+    const { id_discord } = user;
 
-    return this.userService.findByEmail(email)
+    return this.userService.findByDiscord(id_discord)
       .then(existingUser => {
         if (existingUser) {
           throw new Error('User already exists');
@@ -25,10 +25,8 @@ class AuthService {
 
         const { salt, passwordHash } = cipher.saltHashPassword(user.password);
         const newUser = {
-          email: user.email,
           fullName: user.fullName,
           role: 'user',
-          age: 18,
           salt,
           passwordHash,
           id_discord: user.id_discord,
@@ -39,7 +37,7 @@ class AuthService {
       })
       .then(response => {
         if (response.result.ok === 1) {
-          return this.userService.findByEmail(email);
+          return this.userService.findByDiscord(id_discord);
         }
       });
   }

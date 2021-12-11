@@ -44,12 +44,15 @@ module.exports = async (io, socket) => {
     this.parties = this.parties.map((partie) => {
       if (partie._id == data.idPartie) {
         currentPartie = partie;
-        if (!partie.players) {
-          partie.players = [{vies: 3, ...data.currentPlayer}];
-        } else {
-          if (!(partie.players.find((player) => player.id == data.currentPlayer.id))) {
-            partie.players = [{vies: 3, ...data.currentPlayer}, ...partie.players];
+        if (data.currentPlayer.role !== 'admin') {
+          if (!partie.players) {
+            partie.players = [{vies: 3, ...data.currentPlayer}];
+          } else {
+            if (!(partie.players.find((player) => player.id == data.currentPlayer.id))) {
+              partie.players = [{vies: 3, ...data.currentPlayer}, ...partie.players];
+            }
           }
+
         }
       }
       return partie;
@@ -81,21 +84,23 @@ module.exports = async (io, socket) => {
   }
 
   const awnserQuestion = (data) => {
-    let currentPartie;
-    this.parties = this.parties.map((partie) => {
-      if (partie._id == data.idPartie) {
-        if (partie.questions[0].righhAwnser == null) {
-          // todo etre sur que le joueur qui repond a au moins 1 vie si c'Est le cas il faut le kick
-        partie.questions[0] = {...partie.questions[0], player: data.currentPlayer};
-        partie.isAwnsering = true;
-        partie.waitingAwnser = false;
+    if (data.currentPlayer.role !== 'admin') {
+      let currentPartie;
+      this.parties = this.parties.map((partie) => {
+        if (partie._id == data.idPartie) {
+          if (partie.questions[0].righhAwnser == null) {
+            // todo etre sur que le joueur qui repond a au moins 1 vie si c'Est le cas il faut le kick
+          partie.questions[0] = {...partie.questions[0], player: data.currentPlayer};
+          partie.isAwnsering = true;
+          partie.waitingAwnser = false;
+          }
+          currentPartie = partie;
         }
-        currentPartie = partie;
-      }
-      return partie;
-    });
-    io.emit(`getPartie:${data.idPartie}`, currentPartie);
-    io.emit("parties", this.parties);
+        return partie;
+      });
+      io.emit(`getPartie:${data.idPartie}`, currentPartie);
+      io.emit("parties", this.parties);
+    }
   }
 
   const addPoint = (idPartie) => {

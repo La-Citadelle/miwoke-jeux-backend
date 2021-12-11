@@ -28,14 +28,9 @@ class PartiesService {
 
   mapPartieToDto(item) {
     return item ? {...item.ops} : {};
-    // return item ? {
-    //   id: item._id,
-    //   name: item.name,
-    // } : {};
   }
 
   mapDtoToPartie(dto) {
-    // console.log(dto);
     return dto ? {
       id: item._id,
       name: dto.name,

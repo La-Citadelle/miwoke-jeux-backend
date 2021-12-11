@@ -34,11 +34,7 @@ class BaseRepository {
     return this.dbClient
       .then(db => db
         .collection(this.collection)
-        .insertOne(item)
-          .then(result => {
-            return result.ops;
-          })
-      );
+        .insertOne(item));
   }
 
   addMany(items) {
