@@ -17,7 +17,7 @@ services:
       - "traefik.http.routers.miwoke-back.rule=Host(api.remouen.ca)"
       - "traefik.http.routers.miwoke-back.tls=true"
       - "traefik.http.routers.miwoke-back.tls.certresolver=aoefrance"
-      - "traefik.docker.network=miwoke-back"
+      - "traefik.docker.network=web"
     links: 
       - miwoke-mongo
     # depends_on:
