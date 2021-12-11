@@ -1,0 +1,43 @@
+version: '3.1'
+
+# Usage:
+#   docker stack deploy -c stack.yml mongo (or docker-compose -f stack.yml up)
+
+services:
+  miwoke-api:
+    build: .
+    command: npm run start:prod
+    ports:
+      - "3002:3002"
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.miwoke-back.entrypoints=websecure"
+      - "traefik.http.routers.miwoke-back.rule=Host(api.remouen.ca)"
+      - "traefik.http.routers.miwoke-back.tls=true"
+      - "traefik.http.routers.miwoke-back.tls.certresolver=aoefrance"
+      - "traefik.docker.network=miwoke-back"
+    links: 
+      - miwoke-mongo
+    # depends_on:
+    #   - mongo
+
+  miwoke-mongo:
+    image: mongo:latest
+    restart: always
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: mongoadmin
+    #   MONGO_INITDB_ROOT_PASSWORD: mongoadmin
+    volumes:
+      - data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - web
+volumes:
+  data:
+    driver: local
+networks:
+  web:
+    external: true

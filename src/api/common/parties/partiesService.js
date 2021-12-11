@@ -32,8 +32,7 @@ class PartiesService {
 
   mapDtoToPartie(dto) {
     return dto ? {
-      id: item._id,
-      name: dto.name,
+      ...dto
     } : {};
   }
 }

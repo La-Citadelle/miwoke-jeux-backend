@@ -57,8 +57,7 @@ module.exports = async (io, socket) => {
       }
       return partie;
     });
-    io.emit(`getPartie:${data.idPartie}`, currentPartie);
-    io.emit("parties", this.parties);
+    updatePartie(data.idPartie, currentPartie, this.parties);
   }
 
   const addQuestion = (idPartie) => {
@@ -79,8 +78,7 @@ module.exports = async (io, socket) => {
         }
         return partie;
       });
-    io.emit(`getPartie:${idPartie}`, currentPartie);
-    io.emit("parties", this.parties);
+      updatePartie(idPartie, currentPartie, this.parties);
   }
 
   const awnserQuestion = (data) => {
@@ -98,8 +96,7 @@ module.exports = async (io, socket) => {
         }
         return partie;
       });
-      io.emit(`getPartie:${data.idPartie}`, currentPartie);
-      io.emit("parties", this.parties);
+      updatePartie(data.idPartie, currentPartie, this.parties);
     }
   }
 
@@ -123,8 +120,8 @@ module.exports = async (io, socket) => {
       }
       return partie;
     });
-    io.emit(`getPartie:${idPartie}`, currentPartie);
-    io.emit("parties", this.parties);
+    
+    updatePartie(idPartie, currentPartie, this.parties);
   }
 
   const removeLife = (idPartie) => {
@@ -149,13 +146,18 @@ module.exports = async (io, socket) => {
       }
       return partie;
     });
-    io.emit(`getPartie:${idPartie}`, currentPartie);
-    io.emit("parties", this.parties);
+    updatePartie(idPartie, currentPartie, this.parties);
   }
 
   const editPartie = (partie) => {
     parties[partie.id] = partie;
     socket.to(partie.id).emit("partie", partie);
+  }
+
+  const updatePartie = async (idPartie, partie, parties) => {
+    await partiesService.edit(idPartie, partie);
+    io.emit(`getPartie:${idPartie}`, partie);
+    io.emit("parties", parties);
   }
   
   socket.on("getPartie", getPartie);
